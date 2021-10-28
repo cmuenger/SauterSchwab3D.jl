@@ -2,18 +2,10 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
-
-
 const pI   = point(6,5,3)
 const pII  = point(5,2,4)
 const pIII = point(7,1,0)
 const pIV  = point(3,4,0)
-
-#const pI   = point(0,5,3)
-#const pII  = point(5,2,4)
-#const pIII = point(7,1,0)
-#const pIV  = point(3,4,0)
-
 
 const P = simplex(pI,pII,pIII,pIV)
 const Q =  simplex(pI,pII,pIII,pIV)
@@ -106,8 +98,8 @@ println(err_gm)
 using Plots
 plot( yaxis=:log, xaxis=:log, fontfamily="Times" )
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
-plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
-#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(n2,err_sp, label="Simplex-Product SH",markershape=:rect)
+plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
 plot!(xlabel="#Quad. Pts./Func. Evals", ylabel="Rel. Error.", title="Identical Tetrahedron 6D",legend=:bottomleft)
 

@@ -25,23 +25,6 @@ end
 
 
 function INTEGRAND(u,v)
-   #check if point is inside the tetrahedron
-   if u[3]< 0.0 || u[3]>1-u[1]-u[2] || u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
-      println("u:",u)
-   end
-   if v[3]< 0.0 || v[3]>1-v[1]-v[2] || v[2]< 0.0 || v[2]>1-v[1] || v[1]<0.0 || v[1]>1.0
-      println("v:",v)
-   end
-   
-   #=
-   if u[3]< 0.0 || u[3]>u[2] || u[2]< 0.0 || u[2]>u[1] || u[1]<0.0 || u[1]>1.0
-      println("u:",u)
-   end
-   if v[3]< 0.0 || v[3]>v[2] || v[2]< 0.0 || v[2]>v[1] || v[1]<0.0 || v[1]>1.0
-      println("v:",v)
-   end
-   =#
-   
    j1 = volume(P) * factorial(dimension(P))
    j2 = volume(Q) * factorial(dimension(Q))
    x = barytocart(P,u)
@@ -51,15 +34,10 @@ function INTEGRAND(u,v)
    return output
 end
 
-
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, cf_ref)
 println(ref)
-#print("Ref pd: ")
-#ref_pd = sauterschwab_parameterized(INTEGRAND, pd_ref)
-#println(ref_pd)
 println()
-
 
 res_tp =[]
 res_sp =[]
@@ -72,7 +50,6 @@ for i in 2:1:15
    cf = CommonFace6D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, cf)
-   #int_pd = sauterschwab_parameterized(INTEGRAND, pd)
 
    num_pts = 15*length(cf.qps)^6
    push!(n1,num_pts)
@@ -120,8 +97,8 @@ println(err_gm)
 using Plots
 plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
-plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
-#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(n2,err_sp, label="Simplex Tensor-Product SH",markershape=:rect)
+plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 6D",legend=:bottomleft)
 

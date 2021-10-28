@@ -2,22 +2,22 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
-
-
 const pI   = point(1,5,3)
 const pII  = point(2,5,3)
 const pIII = point(7,1,0)
+const pIV  = point(3,4,0)
 
 const qI  = point(10,11,12)
 const qII  = point(10,11,13)
 const qIII = point(11,11,12)
+const qIV  = point(12,12,11)
 
-P = simplex(pI,pII,pIII)
-Q = simplex(qI,qII,qIII)
+P = simplex(pI,pII,pIII,pIV)
+Q = simplex(qI,qII,qIII,qIV)
 
 
 Accuracy2 = 16
-pd_ref = PositiveDistance4D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+pd_ref = PositiveDistance6D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
 			return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
@@ -33,7 +33,7 @@ function INTEGRAND(u,v)
    return(output)
 end
 
-#=
+
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, pd_ref)
 println(ref)
@@ -47,18 +47,18 @@ n2 = []
 n3 = []
 for i in 2:1:14
    Accuracy = i
-   pd = PositiveDistance4D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
-
+   pd = PositiveDistance6D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   
    int_tp = sauterschwab_parameterized(INTEGRAND, pd)
 
-   num_pts = length(pd.qps)^4
+   num_pts = length(pd.qps)^6
    push!(n1,num_pts)
    push!(res_tp,int_tp)
 end
 
 for i in 2:1:7
    Accuracy = i
-   pd_s = PositiveDistance4D_S(SauterSchwab3D._shunnham2D(Accuracy))
+   pd_s = PositiveDistance6D_S(SauterSchwab3D._shunnham3D(Accuracy))
    
    int_sp = sauterschwab_parameterized(INTEGRAND, pd_s)
 
@@ -69,7 +69,7 @@ end
 
 for i in 2:1:12
    Accuracy = i
-   pd_gm = PositiveDistance4D_S(SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1))
+   pd_gm = PositiveDistance6D_S(SauterSchwab3D._grundmannMoeller3D(2*Accuracy-1))
    
    int_gm = sauterschwab_parameterized(INTEGRAND, pd_gm)
 
@@ -92,33 +92,34 @@ plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:x)
 plot!(n2,err_sp, label="Simplex-Product SH",markershape=:x)
 plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,10^7),ylims=(1e-15,1))
-plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Positive Distance 4D")
+plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Positive Distance 6D")
 
-=#
+#=
+
 using BenchmarkTools
 
-ref = -0.0024840549158923397 - 0.005653396751321127im
+ref = -0.0009106940198987786 - 0.0008073832086717964im
 
 
-pd = PositiveDistance4D(SauterSchwab3D._legendre(4,0.0,1.0))
+pd = PositiveDistance6D(SauterSchwab3D._legendre(4,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, pd)
 
-num_pts = length(pd.qps)^4
+num_pts = length(pd.qps)^6
 println(num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println(err_tp)
 
-pd_s = PositiveDistance4D_S(SauterSchwab3D._shunnham2D(4))
-   
-   int_sp = sauterschwab_parameterized(INTEGRAND, pd_s)
+pd_s = PositiveDistance6D_S(SauterSchwab3D._shunnham3D(4))
 
-   num_pts = length(pd_s.qps)^2
+int_sp = sauterschwab_parameterized(INTEGRAND, pd_s)
+
+num_pts = num_pts = length(pd_s.qps)^2
 println(num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println(err_sp)
 
-pd_gm = PositiveDistance4D_S(SauterSchwab3D._grundmannMoeller2D(2*4-1))
+pd_gm = PositiveDistance6D_S(SauterSchwab3D._grundmannMoeller3D(2*4-1))
    
 int_gm = sauterschwab_parameterized(INTEGRAND, pd_gm)
 
@@ -126,3 +127,4 @@ num_pts = length(pd_gm.qps)^2
 println(num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println(err_gm)
+=#

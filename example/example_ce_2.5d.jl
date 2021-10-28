@@ -3,7 +3,6 @@ using CompScienceMeshes
 using SauterSchwab3D
 using StaticArrays
 
-
 const pI   = point(6,5,3)
 const pII  = point(5,2,3)
 const pIII = point(7,1,0)
@@ -14,26 +13,14 @@ const qIII = point(7,5,6)
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,qIII,pII)
 
-
 Accuracy2 = 20
 ce_ref = CommonEdge5D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
-
 
 function integrand(x,y)
       return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
-
 function INTEGRAND(u,v)
-   #check if point is inside the tetrahedron
-   if u[3]< 0.0 || u[3]>1-u[1]-u[2] || u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
-      println("u:",u)
-   end
-   if  v[2]< 0.0 || v[2]>1-v[1] || v[1]<0.0 || v[1]>1.0
-      println("v:",v)
-   end
-   
-   
    n1 = neighborhood(P,u)
    n2 = neighborhood(Q,v)
    x = cartesian(n1)
@@ -43,15 +30,10 @@ function INTEGRAND(u,v)
    return output
 end
 
-#=
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, ce_ref)
 println(ref)
-#print("Ref pd: ")
-#ref_pd = sauterschwab_parameterized(INTEGRAND, pd_ref)
-#println(ref_pd)
 println()
-
 
 res_tp =[]
 res_sp =[]
@@ -59,6 +41,7 @@ res_gm =[]
 n1 = []
 n2 = []
 n3 = []
+
 for i in 2:1:17
    Accuracy = i
    ce = CommonEdge5D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
@@ -115,8 +98,7 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,1e8),ylims=(1e-15,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Edge 5D",legend=:bottomright)
 
-=#
-
+#=
 using BenchmarkTools
 
 ref = 4.263868529192273 + 0.1481859134048196im
@@ -152,3 +134,4 @@ println("Rel Err: ",err_sp)
 println("#Pts: ",num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println("Rel Err: ",err_gm)
+=#

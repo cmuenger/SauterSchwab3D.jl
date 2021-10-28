@@ -2,8 +2,6 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
-
-
 const pI = point(3,4,2)
 const pII = point(3,7,4)
 const pIII = point(8,3,5)
@@ -19,14 +17,7 @@ function integrand(x,y)
       return ((x-pI)'*(y-pII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
-
 function INTEGRAND(u,v)
-   if u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
-      println(u)
-   end
-   if v[2]< 0.0 || v[2]>1-v[1] || v[1]<0.0 || v[1]>1.0
-      println(v)
-   end
    n1 = neighborhood(P,u)
    n2 = neighborhood(Q,v)
    x = cartesian(n1)
@@ -35,7 +26,7 @@ function INTEGRAND(u,v)
    return(output)
 end
 
-#=
+
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, cf_ref)
 println(ref)
@@ -103,7 +94,7 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,10^7),ylims=(1e-15,1))
 plot!(xlabel="Quad. pts.", ylabel="Rel. Error.", title="Common Face 4D")
 
-=#
+#=
 
 using BenchmarkTools
 
@@ -138,3 +129,4 @@ num_pts = 6*length(cf_gm.qps[1])*length(cf_gm.qps[2])
 println("#Pts: ",num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println("Rel Err: ",err_gm)
+=#

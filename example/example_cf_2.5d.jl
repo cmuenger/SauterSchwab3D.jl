@@ -3,46 +3,23 @@ using CompScienceMeshes
 using SauterSchwab3D
 using StaticArrays
 
-
 const pI   = point(1,0,0)
 const pII  = point(0,1,0)
 const pIII = point(0,0,0)
 const pIV  = point(0,0,1)
-
 const qIV  = point(0,0,-1)
 
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,pIII,pII)
 
-
 Accuracy2 = 18
 cf_ref = CommonFace5D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
-
 
 function integrand(x,y)
       return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
-
-function INTEGRAND(u,v)
-   #check if point is inside the tetrahedron
-   if u[3]< 0.0 || u[3]>1-u[1]-u[2] || u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
-      println("u:",u)
-   end
-   if  v[2]< 0.0 || v[2]>1-v[1] || v[1]<0.0 || v[1]>1.0
-      println("v:",v)
-   end
-   
-   
-   #=
-   if u[3]< 0.0 || u[3]>u[2] || u[2]< 0.0 || u[2]>u[1] || u[1]<0.0 || u[1]>1.0
-      println("u:",u)
-   end
-   if v[3]< 0.0 || v[3]>v[2] || v[2]< 0.0 || v[2]>v[1] || v[1]<0.0 || v[1]>1.0
-      println("v:",v)
-   end
-   =#
-   
+function INTEGRAND(u,v) 
    j1 = volume(P) * factorial(dimension(P))
    j2 = volume(Q) * factorial(dimension(Q))
    x = barytocart(P,u)
@@ -52,15 +29,10 @@ function INTEGRAND(u,v)
    return output
 end
 
-#=
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, cf_ref)
 println(ref)
-#print("Ref pd: ")
-#ref_pd = sauterschwab_parameterized(INTEGRAND, pd_ref)
-#println(ref_pd)
 println()
-
 
 res_tp =[]
 res_sp =[]
@@ -68,12 +40,12 @@ res_gm =[]
 n1 = []
 n2 = []
 n3 = []
+
 for i in 2:1:15
    Accuracy = i
    cf = CommonFace5D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, cf)
-   #int_pd = sauterschwab_parameterized(INTEGRAND, pd)
 
    num_pts = 9*length(cf.qps)^5
    push!(n1,num_pts)
@@ -94,7 +66,6 @@ for i in 2:1:7
    push!(res_sp,int_sp)
 end
 
-
 for i in 2:1:12
    Accuracy = i
    cf_gm = CommonFace5D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
@@ -107,7 +78,6 @@ for i in 2:1:12
    push!(n3,num_pts)
    push!(res_gm,int_gm)
 end
-
 
 err_tp = norm.(res_tp.-ref)/norm(ref)
 err_sp = norm.(res_sp.-ref)/norm(ref)
@@ -125,7 +95,7 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,1e7),ylims=(1e-14,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 5D",legend=:topright)
 
-=#
+#=
 using BenchmarkTools
 
 ref = -0.00463274359881397 + 0.002581200521272345im
@@ -162,3 +132,4 @@ num_pts = length(cf_gm.qps[1])*length(cf_gm.qps[2])^2+8*length(cf_gm.qps[2])*len
 println("#Pts: ",num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println("Rel Err: ",err_gm)
+=#

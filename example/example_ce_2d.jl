@@ -2,8 +2,6 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
-
-
 const pI = point(1,0,0)
 const pII = point(0,0,0)
 const pIII = point(0.5,0.7,0)
@@ -12,14 +10,12 @@ const pIV = point(0.8,-0.3,0)
 const P = simplex(pI,pIII,pII)
 const Q = simplex(pI,pIV,pII)
 
-
 Accuracy2 = 30
 ce_ref = CommonEdge4D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
       return ((x-pI)'*(y-pII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
-
 
 function INTEGRAND(u,v)
    if u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
@@ -36,7 +32,6 @@ function INTEGRAND(u,v)
    return(output)
 end
 
-#=
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, ce_ref)
 println(ref)
@@ -56,12 +51,8 @@ for i in 2:1:20
   
    num_pts = 5*length(ce.qps)^4
    push!(n1,num_pts)
-   #num_pts = length(ce_gm.qps[1])*length(ce_gm.qps[2])*length(ce_gm.qps[1])
-   #push!(n2,num_pts)
    
    push!(res_tp,int_tp)
-   #push!(res_gm,int_gm)
-
 end
 
 for i in 2:1:7
@@ -104,7 +95,7 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,10^7),ylims=(1e-15,1))
 plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Edge 4D")
 
-=#
+#=
 using BenchmarkTools
 
 ref = -0.0028991793711368725 + 0.0012868587156426375im
@@ -139,3 +130,4 @@ num_pts = length(ce_gm.qps[1])^2*length(ce_gm.qps[2]) + 4*length(ce_gm.qps[2])^2
 println("#Pts: ",num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println("Rel Err: ",err_gm)
+=#

@@ -2,8 +2,6 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
-
-
 const pI   = point(1,5,3)
 const pII  = point(2,5,3)
 const pIII = point(7,1,0)
@@ -16,15 +14,12 @@ const qIII = point(11,11,12)
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(qI,qII,qIII)
 
-
-
 Accuracy2 = 16
 pd_ref = PositiveDistance5D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
 			return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
 end
-
 
 function INTEGRAND(u,v)
    n1 = neighborhood(P,u)
@@ -35,7 +30,6 @@ function INTEGRAND(u,v)
    return(output)
 end
 
-#=
 print("Ref: ")
 ref = sauterschwab_parameterized(INTEGRAND, pd_ref)
 println(ref)
@@ -47,6 +41,7 @@ res_gm =[]
 n1 = []
 n2 = []
 n3 = []
+
 for i in 2:1:14
    Accuracy = i
    pd = PositiveDistance5D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
@@ -98,8 +93,7 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1,10^7),ylims=(1e-15,1))
 plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Positive Distance 5D")
 
-=#
-
+#=
 using BenchmarkTools
 
 ref = -0.0024685313290508833 - 0.0026636388782296638im
@@ -133,3 +127,4 @@ num_pts = length(pd_gm.qps[1])*length(pd_gm.qps[2])
 println(num_pts)
 err_gm = norm.(int_gm.-ref)/norm(ref)
 println(err_gm)
+=#
