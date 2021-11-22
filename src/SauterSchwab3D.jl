@@ -6,7 +6,6 @@ using StaticArrays
 using FastGaussQuadrature
 using GrundmannMoeller
 using ShunnHamQuadrature
-using Combinatorics
 
 export sauterschwab_parameterized
 export SauterSchwab3DStrategy,Singularity
