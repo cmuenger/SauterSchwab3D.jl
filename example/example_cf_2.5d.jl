@@ -12,8 +12,10 @@ const qIV  = point(0,0,-1)
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,pIII,pII)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
+
 Accuracy2 = 18
-cf_ref = CommonFace5D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+cf_ref = CommonFace5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
       return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
@@ -43,7 +45,7 @@ n3 = []
 
 for i in 2:1:15
    Accuracy = i
-   cf = CommonFace5D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   cf = CommonFace5D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -55,7 +57,7 @@ end
 
 for i in 2:1:7
    Accuracy = i
-   cf_s = CommonFace5D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_s = CommonFace5D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._shunnham2D(Accuracy),
                           SauterSchwab3D._shunnham3D(Accuracy)))
    
@@ -68,7 +70,7 @@ end
 
 for i in 2:1:12
    Accuracy = i
-   cf_gm = CommonFace5D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_gm = CommonFace5D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1),
                           SauterSchwab3D._grundmannMoeller3D(2*Accuracy-1)))
    
@@ -88,19 +90,19 @@ println(err_sp)
 println(err_gm)
 
 using Plots
-plot( yaxis=:log, xaxis=:log)
-plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:x)
-plot!(n2,err_sp, label="Simplex-Product SH",markershape=:x)
-plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1,1e7),ylims=(1e-14,1))
-plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 5D",legend=:topright)
+plot( yaxis=:log, xaxis=:log, fontfamily="Times")
+plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(xlims=(1e2,1e5),ylims=(1e-7,1))
+plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 5D",legend=:bottomleft)
 
-#=
+
 using BenchmarkTools
 
 ref = -0.00463274359881397 + 0.002581200521272345im
 
-cf = CommonFace5D(SauterSchwab3D._legendre(4,0.0,1.0))
+cf = CommonFace5D(sing,SauterSchwab3D._legendre(4,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -108,8 +110,10 @@ num_pts = 9*length(cf.qps)^5
 println("#Pts: ",num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println("Rel. Err: ",err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf) end
 
-cf_s = CommonFace5D_S((SauterSchwab3D._legendre(4,0.0,1.0),
+
+cf_s = CommonFace5D_S(sing,(SauterSchwab3D._legendre(4,0.0,1.0),
                        SauterSchwab3D._shunnham2D(4),
                        SauterSchwab3D._shunnham3D(4)))
 
@@ -120,7 +124,10 @@ num_pts = length(cf_s.qps[1])*length(cf_s.qps[2])^2+8*length(cf_s.qps[2])*length
 println("#Pts: ",num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println("Rel Err: ",err_sp)
+@time  for i in 1:100  sauterschwab_parameterized(INTEGRAND, cf_s) end
 
+
+#=
 cf_gm = CommonFace5D_S((SauterSchwab3D._legendre(4,0.0,1.0),
                         SauterSchwab3D._grundmannMoeller2D(2*4-1),
                         SauterSchwab3D._grundmannMoeller3D(2*4-1)))

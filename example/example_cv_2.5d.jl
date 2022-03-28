@@ -13,9 +13,10 @@ const qIII = point(7,5,6)
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(pI,qII,qIII)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
 
 Accuracy2 = 16
-cv_ref = CommonVertex5D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+cv_ref = CommonVertex5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
    ((x-pI)'*(y-pIV))*return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
@@ -45,7 +46,7 @@ n3 = []
 #Grauss tensor product
 for i in 2:1:14
    Accuracy = i
-   cv = CommonVertex5D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   cv = CommonVertex5D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
   
    int_tp = sauterschwab_parameterized(INTEGRAND, cv)
   
@@ -58,7 +59,7 @@ end
 #ShunnHam simplex product
 for i in 2:1:7
    Accuracy = i
-   cv_s = CommonVertex5D_S((SauterSchwab3D._shunnham3D(Accuracy),
+   cv_s = CommonVertex5D_S(sing,(SauterSchwab3D._shunnham3D(Accuracy),
                             SauterSchwab3D._shunnham2D(Accuracy)))
    
    int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
@@ -71,7 +72,7 @@ end
 #GrundmannMoeller simplex product
 for i in 2:1:12
    Accuracy = i
-   cv_gm = CommonVertex5D_S((SauterSchwab3D._grundmannMoeller3D(2*Accuracy-1),
+   cv_gm = CommonVertex5D_S(sing,(SauterSchwab3D._grundmannMoeller3D(2*Accuracy-1),
                              SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1)))
    
    int_gm = sauterschwab_parameterized(INTEGRAND, cv_gm)
@@ -90,19 +91,19 @@ println(err_sp)
 println(err_gm)
 
 using Plots
-plot( yaxis=:log, xaxis=:log)
-plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:x)
-plot!(n2,err_sp, label="Simplex-Product SH",markershape=:x)
-plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1,1e7),ylims=(1e-15,1))
-plot!(xlabel="#Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 5D")
+plot( yaxis=:log, xaxis=:log, fontfamily="Times" , width=600, height=400)
+plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(xlims=(1e1,1e5),ylims=(1e-7,1))
+p = plot!(xlabel="#Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 5D",legend=:bottomleft)
+savefig(p,"CommonVetrtex5DPlot.png")
 
-#=
 using BenchmarkTools
 
 ref = -0.3263644363080338 + 0.46042867580530505im
 
-cv = CommonVertex5D(SauterSchwab3D._legendre(6,0.0,1.0))
+cv = CommonVertex5D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
   
 int_tp = sauterschwab_parameterized(INTEGRAND, cv)
 
@@ -110,8 +111,9 @@ num_pts = 2*length(cv.qps)^5
 println(num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println(err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv) end
 
-cv_s = CommonVertex5D_S((SauterSchwab3D._shunnham3D(6),
+cv_s = CommonVertex5D_S(sing,(SauterSchwab3D._shunnham3D(6),
 SauterSchwab3D._shunnham2D(6)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
@@ -120,7 +122,9 @@ num_pts = 2*length(cv_s.qps[1])*length(cv_s.qps[2])
 println(num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println(err_sp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv_s) end
 
+#=
 cv_gm = CommonVertex5D_S((SauterSchwab3D._grundmannMoeller3D(2*6-1),
 SauterSchwab3D._grundmannMoeller2D(2*6-1)))
 

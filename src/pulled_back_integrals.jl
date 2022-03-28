@@ -4,7 +4,7 @@ integrals on  tetrahedrons
 
 #identical tetrahedron
 function k6p_ct(f, x1, x2, x3, y1, y2, y3)
-    sum = 0;
+    #sum = 0;
     
      #Domain 2/17
     #=1=#   ξ1 = x1
@@ -16,7 +16,7 @@ function k6p_ct(f, x1, x2, x3, y1, y2, y3)
 
     det = x1^5*x2^4*x3^3*y1^2
 
-    sum += f((1-ξ1,ξ1-ξ2,ξ3-η1+η2),(1-(ξ1-η3),ξ1-ξ2+η1-η3,ξ3-η1))*det
+    sum = f((1-ξ1,ξ1-ξ2,ξ3-η1+η2),(1-(ξ1-η3),ξ1-ξ2+η1-η3,ξ3-η1))*det
 
     sum += f((1-(ξ1-η3),ξ1-ξ2+η1-η3,ξ3-η1),(1-ξ1,ξ1-ξ2,ξ3-η1+η2))*det
 
@@ -149,7 +149,7 @@ end
 
 #overlapping face
 function k6p_cf(f, x1, x2, x3, y1, y2, y3)
-    sum = 0;
+    #sum = 0;
     
     #Domain 1
     #=1=#   ξ1 = x1
@@ -162,7 +162,7 @@ function k6p_cf(f, x1, x2, x3, y1, y2, y3)
     det = x1^5*x2^4*x3^3*y1
 
     #sum += f((ξ1,ξ2,η3),(ξ1-ξ3+η1,ξ2-ξ3+η2,η2))*det
-    sum += f((1-ξ1,ξ1-ξ2,ξ3-η3),(1-(ξ1-ξ3+η1),ξ1-ξ2+η2,η1-η2))*det
+    sum = f((1-ξ1,ξ1-ξ2,ξ3-η3),(1-(ξ1-ξ3+η1),ξ1-ξ2+η2,η1-η2))*det
 
 
     #Domain 3/5/13
@@ -297,7 +297,7 @@ end
 #overlapping edge 
 function k6p_ce(f, x1, x2, x3, y1, y2, y3)
    
-    sum = 0;
+    #sum = 0;
     #=1=#   ξ1 = x1
     #=2=#   ξ2 = x1 * x2
     #=3=#   ξ3 = x1 * x2 * x3
@@ -307,7 +307,7 @@ function k6p_ce(f, x1, x2, x3, y1, y2, y3)
     
     det = x1^5*x2^4*x3*y2
     #Domain 1
-    sum += f((1-ξ1,ξ1-ξ2+η1,ξ3-η1),(1-(ξ1+η2-ξ2),ξ1-ξ2,η2-η3))*det
+    sum = f((1-ξ1,ξ1-ξ2+η1,ξ3-η1),(1-(ξ1+η2-ξ2),ξ1-ξ2,η2-η3))*det
     
     #=1=#   ξ1 = x1
     #=2=#   ξ2 = x1 * x2
@@ -481,7 +481,7 @@ end
 #positive distance
 function k6p_pd(f, x1, x2, x3, y1, y2, y3)
    
-    sum = 0;
+    #sum = 0;
     #=1=#   ξ1 = x1
     #=2=#   ξ2 = x1 * x2
     #=3=#   ξ3 = x1 * x2 * x3
@@ -491,7 +491,7 @@ function k6p_pd(f, x1, x2, x3, y1, y2, y3)
     
     det = x1^2*x2*y1^2*y2
     #Domain 1
-    sum += f((1-ξ1,ξ1-ξ2,ξ3),(1-η1,η1-η2,η3))*det
+    sum = f((1-ξ1,ξ1-ξ2,ξ3),(1-η1,η1-η2,η3))*det
 
     return sum
 end
@@ -511,7 +511,7 @@ integrals on  tetrahedron and triagle
 
 ### Common Face ###
 function k5p_cf(f, x1, x2, x3, y1, y2)
-    sum = 0;
+    #sum = 0;
     
     #Domain 1
     #=1=#   ξ1 = x1
@@ -522,7 +522,7 @@ function k5p_cf(f, x1, x2, x3, y1, y2)
     
     det = x1^4*x2^3*x3^2
 
-    sum += f((1-ξ1,ξ1-ξ2,ξ3-ξ4),(1-(ξ1-ξ3+ξ5),ξ2-ξ3))*det
+    sum = f((1-ξ1,ξ1-ξ2,ξ3-ξ4),(1-(ξ1-ξ3+ξ5),ξ2-ξ3))*det
     
     #Domain 2-9
     #=1=#   ξ1 = x1
@@ -604,7 +604,7 @@ end
 
 ### Common Edge ###
 function k5p_ce(f, x1, x2, x3, y1, y2)
-    sum = 0;
+    #sum = 0;
     
     #Domain 1/2
     #=1=#   ξ1 = x1
@@ -615,7 +615,7 @@ function k5p_ce(f, x1, x2, x3, y1, y2)
     
     det = x1^4*x2^3*x3
  
-    sum += f((1-ξ1,ξ1-ξ3,ξ4),(1-(ξ1-ξ5),ξ2-ξ5))*det
+    sum = f((1-ξ1,ξ1-ξ3,ξ4),(1-(ξ1-ξ5),ξ2-ξ5))*det
 
     sum += f((1-ξ1,ξ1-ξ2,ξ5),(1-(ξ1-ξ4),ξ3-ξ4))*det
     
@@ -706,9 +706,9 @@ end
 
 ### Common Vertex ###
 function k5p_cv(f, x1, x2, x3, x4, x5)
-    sum = 0;
+    #sum = 0;
     
-    sum += f((1-x1,x1-x1*x2,x1*x2*x3),(1-x1*x4,x1*x4*x5))*(x1^4*x2*x4)
+    sum = f((1-x1,x1-x1*x2,x1*x2*x3),(1-x1*x4,x1*x4*x5))*(x1^4*x2*x4)
     
     sum += f((1-x1*x3,x1*x3-x1*x3*x4,x1*x3*x4*x5),(1-x1,x1*x2))*(x1^4*x3^2*x4)
 
@@ -730,18 +730,18 @@ end
 ### Positive Distance ###
 function k5p_pd(f, x1, x2, x3, y1, y2)
    
-    u = [1-x1, x1-x1*x2, x1*x2*x3] #jacobian x1^2*x2
-    v = [1-y1, y1*y2] #jacobian y1 
+    #u = [1-x1, x1-x1*x2, x1*x2*x3] #jacobian x1^2*x2
+    #v = [1-y1, y1*y2] #jacobian y1 
 
-    return f(u,v)*(x1^2*x2)*(y1)
+    return f((1-x1, x1-x1*x2, x1*x2*x3),(1-y1, y1*y2))*(x1^2*x2)*(y1)
 end
 
 function k5p_pd_A(f, x1, x2, x3, y1, y2)
    
-    u = [1-x1, x1-x2, x3] 
-    v = [1-y1, y2]  
+    #u = [1-x1, x1-x2, x3] 
+    #v = [1-y1, y2]  
 
-    return f(u,v)
+    return f((1-x1, x1-x2, x3),(1-y1, y2))
 end
 
 
@@ -770,7 +770,7 @@ end
 
 function k4p_cf_A(f, x1, x2, x3, y1)
 
-	sum = 0;
+	#sum = 0;
     #Domain 1-6
     #=1=#   ξ1 = x1
     #=2=#   ξ2 = x2
@@ -779,7 +779,7 @@ function k4p_cf_A(f, x1, x2, x3, y1)
 
     det = x3
 
-    sum+=f((1-ξ1,ξ1-ξ2+ξ3),(1-(ξ1-ξ4),ξ1-ξ2))*det
+    sum=f((1-ξ1,ξ1-ξ2+ξ3),(1-(ξ1-ξ4),ξ1-ξ2))*det
 
     sum+=f((1-(ξ1-ξ4),ξ1-ξ2),(1-ξ1,ξ1-ξ2+ξ3))*det
 
@@ -816,7 +816,7 @@ function k4p_ce(f, η1, η2, η3, ξ)
 end
 
 function k4p_ce_A(f, x1, x2, y1, z1)
-    sum = 0;
+   # sum = 0;
 
     #Domain 1
     #=1=#   ξ1 = x1
@@ -826,13 +826,13 @@ function k4p_ce_A(f, x1, x2, y1, z1)
 
     det = x2^2
 
-    sum+=f((1-ξ1,ξ4),(1-(ξ1-ξ3),ξ2-ξ3))*det
+    sum=f((1-ξ1,ξ4),(1-(ξ1-ξ3),ξ2-ξ3))*det
 
     return sum
 end
 
 function k4p_ce_B(f, x1, x2, y1, y2)
-    sum = 0;
+    #sum = 0;
     #Domain 2-5
     #=1=#   ξ1 = x1
     #=2=#   ξ2 = x2
@@ -841,7 +841,7 @@ function k4p_ce_B(f, x1, x2, y1, y2)
 
     det = x2^2
 
-    sum+=f((1-ξ1,ξ2),(1-(ξ1-ξ4),ξ3-ξ4))*det
+    sum=f((1-ξ1,ξ2),(1-(ξ1-ξ4),ξ3-ξ4))*det
 
     sum+=f((1-(ξ1-ξ3),(ξ2-ξ3)),(1-ξ1,ξ4))*det
 

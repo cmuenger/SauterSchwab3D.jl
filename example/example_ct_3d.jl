@@ -10,8 +10,11 @@ const pIV  = point(3,4,0)
 const P = simplex(pI,pII,pIII,pIV)
 const Q =  simplex(pI,pII,pIII,pIV)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
+
+
 Accuracy2 = 18
-ct_ref = CommonVolume6D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+ct_ref = CommonVolume6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
    ((x-pI)'*(y-pI))*return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
@@ -47,7 +50,7 @@ n2 = []
 n3 = []
 for i in 2:1:15
    Accuracy = i
-   ct = CommonVolume6D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   ct = CommonVolume6D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, ct)
   
@@ -59,7 +62,7 @@ end
 
 for i in 2:1:6
    Accuracy = i
-   ct_s = CommonVolume6D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   ct_s = CommonVolume6D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._shunnham2D(Accuracy),
                           SauterSchwab3D._shunnham4D(Accuracy)))
    
@@ -73,7 +76,7 @@ end
 
 for i in 2:1:12
    Accuracy = i
-   ct_gm = CommonVolume6D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   ct_gm = CommonVolume6D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1),
                           SauterSchwab3D._grundmannMoeller4D(2*Accuracy-1)))
    
@@ -103,13 +106,13 @@ plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
 plot!(xlabel="#Quad. Pts./Func. Evals", ylabel="Rel. Error.", title="Identical Tetrahedron 6D",legend=:bottomleft)
 
-#=
+
 
 using BenchmarkTools
 
 ref = 1.749281958454714 - 4.409866361065269im
 
-ct = CommonVolume6D(SauterSchwab3D._legendre(5,0.0,1.0))
+ct = CommonVolume6D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, ct)
 
@@ -118,8 +121,9 @@ num_pts = 18*length(ct.qps)^6
 println("#Pts: ",num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println("Rell Err; ",err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, ct) end
 
-ct_s = CommonVolume6D_S((SauterSchwab3D._legendre(5,0.0,1.0),
+ct_s = CommonVolume6D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
                          SauterSchwab3D._shunnham2D(5),
                          SauterSchwab3D._shunnham4D(5)))
 
@@ -131,8 +135,11 @@ num_pts = 2*length(ct_s.qps[1])^2*length(ct_s.qps[3])+
 println("#Pts: ",num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println("Rel Err: ",err_sp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, ct_s) end
 
-ct_gm = CommonVolume6D_S((SauterSchwab3D._legendre(7,0.0,1.0),
+
+#=
+ct_gm = CommonVolume6D_S(sing,(SauterSchwab3D._legendre(7,0.0,1.0),
                          SauterSchwab3D._grundmannMoeller2D(2*7-1),
                          SauterSchwab3D._grundmannMoeller4D(2*7-1)))
 

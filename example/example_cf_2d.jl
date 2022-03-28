@@ -9,8 +9,11 @@ const pIII = point(8,3,5)
 const P = simplex(pI, pII, pIII)
 const Q = simplex(pI, pII, pIII)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
+
+
 Accuracy2 = 24
-cf_ref = CommonFace4D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+cf_ref = CommonFace4D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 
 function integrand(x,y)
@@ -41,7 +44,7 @@ n2 = []
 n3 = []
 for i in 2:1:14
    Accuracy = i
-   cf = CommonFace4D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   cf = CommonFace4D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
   
    int_tp = sauterschwab_parameterized(INTEGRAND, cf)
   
@@ -53,7 +56,7 @@ end
 
 for i in 2:1:7
    Accuracy = i
-   cf_s = CommonFace4D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_s = CommonFace4D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._shunnham3D(Accuracy)))
    
    int_sp = sauterschwab_parameterized(INTEGRAND, cf_s)
@@ -68,7 +71,7 @@ end
 for i in 2:1:12
    Accuracy = i
 
-   cf_gm = CommonFace4D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_gm = CommonFace4D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._grundmannMoeller3D(2*(Accuracy-1)+1)))
    
    int_gm = sauterschwab_parameterized(INTEGRAND, cf_gm)
@@ -87,20 +90,20 @@ println(err_sp)
 println(err_gm)
 
 using Plots
-plot( yaxis=:log, xaxis=:log)
-plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:x)
-plot!(n2,err_sp, label="Simplex-Product SH",markershape=:x)
-plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1,10^7),ylims=(1e-15,1))
-plot!(xlabel="Quad. pts.", ylabel="Rel. Error.", title="Common Face 4D")
+plot( yaxis=:log, xaxis=:log, fontfamily="Times")
+plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(xlims=(1e1,1e4),ylims=(1e-6,1))
+plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 4D",legend=:bottomleft)
 
-#=
+
 
 using BenchmarkTools
 
 ref = 9.199951912100538 - 5.619050336211777im
 
-cf = CommonFace4D(SauterSchwab3D._legendre(5,0.0,1.0))
+cf = CommonFace4D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
   
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -108,8 +111,9 @@ num_pts = 6*length(cf.qps)^4
 println("#Pts: ",num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println("Rel. Err: ",err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf) end
 
-cf_s = CommonFace4D_S((SauterSchwab3D._legendre(6,0.0,1.0),
+cf_s = CommonFace4D_S(sing,(SauterSchwab3D._legendre(6,0.0,1.0),
 SauterSchwab3D._shunnham3D(6)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, cf_s)
@@ -119,7 +123,9 @@ num_pts = 6*length(cf_s.qps[1])*length(cf_s.qps[2])
 println("#Pts: ",num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println("Rel Err: ",err_sp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf_s) end
 
+#=
 cf_gm = CommonFace4D_S((SauterSchwab3D._legendre(6,0.0,1.0),
 SauterSchwab3D._grundmannMoeller3D(2*6-1)))
 

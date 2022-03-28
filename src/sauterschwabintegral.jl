@@ -249,7 +249,7 @@ function sauterschwab_parameterized(integrand, method::CommonFace5D_S)
 	sum(w1*w2*w3*k5p_cf_A(integrand, x[1], x[2], x[3], y, z)
 		for (x, w1) in qps[3], (y, w2) in qps[1], (z, w3) in qps[1]) +
     sum(w1*w2*k5p_cf_B(integrand, x[1], x[2], x[3], y[1], y[2])
-            for (x, w1) in qps[3], (y, w2) in qps[2]) 
+        for (x, w1) in qps[3], (y, w2) in qps[2]) 
 end
 
 #Common Edge Tensor-Product

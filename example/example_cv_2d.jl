@@ -11,9 +11,10 @@ const pV = point(0,0,0)
 const P = simplex(pI,pII,pIII)
 const Q = simplex(pI,pIV,pV)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
 
 Accuracy2 = 30
-cv_ref = CommonVertex4D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+cv_ref = CommonVertex4D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
       return ((x-pI)'*(y-pV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
@@ -44,7 +45,7 @@ n3 = []
 #Grauss tensor product
 for i in 2:1:25
    Accuracy = i
-   cv = CommonVertex4D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   cv = CommonVertex4D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, cv)
 
@@ -58,7 +59,7 @@ end
 #ShunnHam simplex product
 for i in 2:1:7
    Accuracy = i
-   cv_s = CommonVertex4D_S(SauterSchwab3D._shunnham2D(Accuracy))
+   cv_s = CommonVertex4D_S(sing,SauterSchwab3D._shunnham2D(Accuracy))
    
    int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
 
@@ -70,7 +71,7 @@ end
 #GrundmannMoeller simplex product
 for i in 2:1:12
    Accuracy = i
-   cv_gm = CommonVertex4D_S(SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1))
+   cv_gm = CommonVertex4D_S(sing,SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1))
    
    int_gm = sauterschwab_parameterized(INTEGRAND, cv_gm)
 
@@ -89,20 +90,20 @@ println(err_sp)
 println(err_gm)
 
 using Plots
-plot( yaxis=:log, xaxis=:log)
-plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:x)
-plot!(n2,err_sp, label="Simplex-Product SH",markershape=:x)
-plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1,10^7),ylims=(1e-15,1))
-plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 4D")
+plot( yaxis=:log, xaxis=:log, fontfamily="Times")
+plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(xlims=(5,10^4),ylims=(1e-6,1))
+plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 4D",legend=:bottomleft)
 
 
-#=
+
 using BenchmarkTools
 
 ref = -1.0761994366251377 + 1.0886007687110666im
 
-cv = CommonVertex4D(SauterSchwab3D._legendre(6,0.0,1.0))
+cv = CommonVertex4D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, cv)
 
@@ -110,8 +111,10 @@ num_pts = length(cv.qps)^4
 println(num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println(err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv) end
 
-cv_s = CommonVertex4D_S(SauterSchwab3D._shunnham2D(6))
+
+cv_s = CommonVertex4D_S(sing,SauterSchwab3D._shunnham2D(6))
    
 int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
 
@@ -119,6 +122,9 @@ num_pts = length(cv_s.qps)^2
 println(num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println(err_sp)
+ @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv_s) end
+
+#=
 
 cv_gm = CommonVertex4D_S(SauterSchwab3D._grundmannMoeller2D(2*6-1))
    

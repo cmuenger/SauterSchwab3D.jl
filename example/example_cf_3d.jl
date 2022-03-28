@@ -14,9 +14,10 @@ const qIV  = point(0,0,-1)
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,pII,qIV,pIII)
 
+const sing = SauterSchwab3D.singularity_detection(P,Q)
 
 Accuracy2 = 18
-cf_ref = CommonFace6D(SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
+cf_ref = CommonFace6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 
 function integrand(x,y)
@@ -47,7 +48,7 @@ n2 = []
 n3 = []
 for i in 2:1:15
    Accuracy = i
-   cf = CommonFace6D(SauterSchwab3D._legendre(Accuracy,0.0,1.0))
+   cf = CommonFace6D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
    int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -60,7 +61,7 @@ end
 
 for i in 2:1:7
    Accuracy = i
-   cf_s = CommonFace6D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_s = CommonFace6D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._shunnham2D(Accuracy),
                           SauterSchwab3D._shunnham3D(Accuracy)))
    
@@ -74,7 +75,7 @@ end
 
 for i in 2:1:12
    Accuracy = i
-   cf_gm = CommonFace6D_S((SauterSchwab3D._legendre(Accuracy,0.0,1.0),
+   cf_gm = CommonFace6D_S(sing,(SauterSchwab3D._legendre(Accuracy,0.0,1.0),
                           SauterSchwab3D._grundmannMoeller2D(2*Accuracy-1),
                           SauterSchwab3D._grundmannMoeller3D(2*Accuracy-1)))
    
@@ -97,18 +98,18 @@ println(err_gm)
 using Plots
 plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
-plot!(n2,err_sp, label="Simplex Tensor-Product SH",markershape=:rect)
-plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+#plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 6D",legend=:bottomleft)
 
 
-#=
+
 using BenchmarkTools
 
-ref = -0.001087039618672416 + 0.0008498251902512398im
+ref = 0.0011204365593010864 - 0.000870131729342847im
 
-cf = CommonFace6D(SauterSchwab3D._legendre(4,0.0,1.0))
+cf = CommonFace6D(sing,SauterSchwab3D._legendre(4,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -116,8 +117,9 @@ num_pts = 15*length(cf.qps)^6
 println("#Pts: ",num_pts)
 err_tp = norm.(int_tp.-ref)/norm(ref)
 println("Rel. Err: ",err_tp)
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf) end
 
-cf_s = CommonFace6D_S((SauterSchwab3D._legendre(5,0.0,1.0),
+cf_s = CommonFace6D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
                          SauterSchwab3D._shunnham2D(5),
                          SauterSchwab3D._shunnham3D(5)))
 
@@ -128,8 +130,9 @@ num_pts = 3*length(cf_s.qps[1])*length(cf_s.qps[2])*length(cf_s.qps[3])+
 println("#Pts: ",num_pts)
 err_sp = norm.(int_sp.-ref)/norm(ref)
 println("Rel Err: ",err_sp)
-
-cf_gm = CommonFace6D_S((SauterSchwab3D._legendre(5,0.0,1.0),
+@time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf_s) end
+#=
+cf_gm = CommonFace6D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
                          SauterSchwab3D._grundmannMoeller2D(2*5-1),
                          SauterSchwab3D._grundmannMoeller3D(2*5-1)))
 
