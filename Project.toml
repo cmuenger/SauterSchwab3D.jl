@@ -1,6 +1,6 @@
 name = "SauterSchwab3D"
 uuid = "0a13313b-1c00-422e-8263-562364ed9544"
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 CompScienceMeshes = "3e66a162-7b8c-5da0-b8f8-124ecd2c3ae1"
