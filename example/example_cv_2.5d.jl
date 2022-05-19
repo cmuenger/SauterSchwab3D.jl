@@ -2,6 +2,7 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI   = point(6,5,3)
 const pII  = point(5,2,3)
 const pIII = point(7,1,0)
@@ -9,17 +10,27 @@ const pIV  = point(3,4,0)
 
 const qII  = point(3,8,4)
 const qIII = point(7,5,6)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(1,1,0)
+const pIV  = point(1,1,1)
+
+const qIII = point(0,-1,0)
+const qII = point(-1,-1,0)
+
 
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(pI,qII,qIII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 16
+Accuracy2 = 15
 cv_ref = CommonVertex5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-   ((x-pI)'*(y-pIV))*return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
+    return ((x-pIV)'*(y-pI))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 function INTEGRAND(u,v)
@@ -95,15 +106,16 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times" , width=600, height=400)
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1e1,1e5),ylims=(1e-7,1))
-p = plot!(xlabel="#Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 5D",legend=:bottomleft)
-savefig(p,"CommonVetrtex5DPlot.png")
+plot!(xlims=(1e1,1e5),ylims=(1e-8,1))
+p = plot!(xlabel="Number of Quadrature points", ylabel="Rel. Error.", title="Common Vertex 5D",legend=:bottomleft)
+
+savefig(p,"CommonVetrtex5D.png")
 
 using BenchmarkTools
 
-ref = -0.3263644363080338 + 0.46042867580530505im
+ref = -8.74279483435905e-5 + 0.0016912614914018284im
 
-cv = CommonVertex5D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
+cv = CommonVertex5D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
   
 int_tp = sauterschwab_parameterized(INTEGRAND, cv)
 
@@ -113,8 +125,8 @@ err_tp = norm.(int_tp.-ref)/norm(ref)
 println(err_tp)
 @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv) end
 
-cv_s = CommonVertex5D_S(sing,(SauterSchwab3D._shunnham3D(6),
-SauterSchwab3D._shunnham2D(6)))
+cv_s = CommonVertex5D_S(sing,(SauterSchwab3D._shunnham3D(5),
+SauterSchwab3D._shunnham2D(5)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
 

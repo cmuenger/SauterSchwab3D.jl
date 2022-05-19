@@ -2,6 +2,7 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI   = point(1,5,3)
 const pII  = point(2,5,3)
 const pIII = point(7,1,0)
@@ -10,17 +11,27 @@ const pIV  = point(3,4,0)
 const qI  = point(10,11,12)
 const qII  = point(10,11,13)
 const qIII = point(11,11,12)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
+const pIV  = point(0,0,1)
+
+const qI  = point(10,0,0)
+const qII  = point(9,0,0)
+const qIII = point(10,-1,0)
 
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(qI,qII,qIII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 16
+Accuracy2 = 15
 pd_ref = PositiveDistance5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-			return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
+			return ((x-pIV)'*(y-pI))*(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
 end
 
 function INTEGRAND(u,v)
@@ -92,13 +103,13 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(5,10^5),ylims=(1e-10,1e-1))
+plot!(xlims=(5,10^5),ylims=(1e-15,1e-1))
 plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Positive Distance 5D",legend=:bottomleft)
 
 
 using BenchmarkTools
 
-ref = 0.0024685313290508802 + 0.002663638878229659im
+ref = 0.0015695769420654704 + 0.00023577833930288312im
 
 
 pd = PositiveDistance5D(sing,SauterSchwab3D._legendre(4,0.0,1.0))

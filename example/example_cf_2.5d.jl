@@ -3,22 +3,23 @@ using CompScienceMeshes
 using SauterSchwab3D
 using StaticArrays
 
-const pI   = point(1,0,0)
-const pII  = point(0,1,0)
-const pIII = point(0,0,0)
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
 const pIV  = point(0,0,1)
-const qIV  = point(0,0,-1)
+
+
 
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,pIII,pII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 18
+Accuracy2 = 15
 cf_ref = CommonFace5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-      return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
+      return ((x-pIV)'*(y-pI))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 function INTEGRAND(u,v) 
@@ -43,7 +44,7 @@ n1 = []
 n2 = []
 n3 = []
 
-for i in 2:1:15
+for i in 2:1:14
    Accuracy = i
    cf = CommonFace5D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
@@ -94,15 +95,15 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1e2,1e5),ylims=(1e-7,1))
+plot!(xlims=(1e1,1e6),ylims=(1e-8,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 5D",legend=:bottomleft)
 
 
 using BenchmarkTools
 
-ref = -0.00463274359881397 + 0.002581200521272345im
+ref = 0.0031433720332308696 - 0.0010631265593562705im
 
-cf = CommonFace5D(sing,SauterSchwab3D._legendre(4,0.0,1.0))
+cf = CommonFace5D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 
@@ -113,9 +114,9 @@ println("Rel. Err: ",err_tp)
 @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cf) end
 
 
-cf_s = CommonFace5D_S(sing,(SauterSchwab3D._legendre(4,0.0,1.0),
-                       SauterSchwab3D._shunnham2D(4),
-                       SauterSchwab3D._shunnham3D(4)))
+cf_s = CommonFace5D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
+                       SauterSchwab3D._shunnham2D(5),
+                       SauterSchwab3D._shunnham3D(5)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, cf_s)
 

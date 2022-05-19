@@ -2,6 +2,7 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI   = point(1,5,3)
 const pII  = point(2,5,3)
 const pIII = point(7,1,0)
@@ -11,17 +12,28 @@ const qI  = point(10,11,12)
 const qII  = point(10,11,13)
 const qIII = point(11,11,12)
 const qIV  = point(12,12,11)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
+const pIV  = point(0,0,1)
+
+const qI  = point(10,0,0)
+const qII  = point(9,0,0)
+const qIII = point(10,-1,0)
+const qIV  = point(10,0,-1)
 
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(qI,qII,qIII,qIV)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 16
+Accuracy2 = 15
 pd_ref = PositiveDistance6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-			return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
+			return ((x-pI)'*(y-qIII))*(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
 end
 
 
@@ -99,7 +111,7 @@ plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Positive 
 
 using BenchmarkTools
 
-ref = -0.0009106940198987786 - 0.0008073832086717964im
+ref =  1.3756442688589052e-5 - 5.803891587176303e-6im
 
 
 pd = PositiveDistance6D(sing,SauterSchwab3D._legendre(4,0.0,1.0))

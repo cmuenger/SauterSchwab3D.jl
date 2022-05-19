@@ -1,7 +1,5 @@
 
 
-# D: the dimension of the manifold
-# E: the type of the singularity 
 abstract type Singularity end
 abstract type Singularity6D <: Singularity end
 abstract type Singularity5D <: Singularity end
@@ -22,13 +20,6 @@ struct Singularity5DFace   <: Singularity5D T::SVector{3,Int64}; S::SVector{3,In
 struct Singularity4DPoint  <: Singularity4D T::SVector{1,Int64}; S::SVector{1,Int64} end
 struct Singularity4DEdge   <: Singularity4D T::SVector{2,Int64}; S::SVector{2,Int64} end
 struct Singularity4DFace   <: Singularity4D T::SVector{3,Int64}; S::SVector{3,Int64} end
-
-#=
-struct Singularity{D,E}
-    T::Array{Int64}
-    S::Array{Int64}
-end
-=#
 
 function singularity_detection(t,s)
 
@@ -64,63 +55,10 @@ function singularity_detection(t,s)
         sing == 3 && return Singularity6DFace(idx_t,idx_t)
         sing == 4 && return Singularity6DVolume(idx_t,idx_t)
     end
-    #return Singularity{D,sing}(idx_t, idx_s )
+ 
 end
 
 
-#=
-function tetrahedron_face_order(I)
-    n = length(I)
-    K = zeros(Int64,4)
-    for i in 1:n
-        for j in 1:n
-            if I[j] == i
-                K[i] = j
-                break
-            end
-        end
-    end
-
-    return SVector{4}(K)
-end
-
-
-function tetrahedron_edge_order(I)
-
-    n = length(I)
-    J = zeros(Int64,4)
-    for i in 1:n
-        for j in 1:n
-            if I[j] == i
-                J[i] = j
-                break
-            end
-        end
-    end
-
-    edges = collect(combinations(J,2))
-    ref_edges  = collect(combinations([1,2,3,4],2))
-    n = length(edges)
-    K = zeros(Int64,6)
-    O = zeros(Int64,6)
-
-    for i in 1:n
-        for j in 1:n
-            if edges[i] == ref_edges[j]
-                K[i] = j
-                O[i] = 1
-                break
-            elseif reverse(edges[i]) == ref_edges[j]
-                K[i] = j
-                O[i] = -1
-                break
-            end
-        end
-    end
-
-    return SVector{6}(K),SVector{6}(O)
-end
-=#
 
 """"
 Tetrahedron-Tetrahedron reordering

@@ -2,22 +2,33 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI = point(1,5,3)
 const pII = point(2,5,3)
 const pIII = point(7,1,0)
 const pIV = point(5,1,-3)
 const pV = point(0,0,0)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
+
+
+const qII  = point(-1,0,0)
+const qIII = point(0,-1,0)
+
 
 const P = simplex(pI,pII,pIII)
-const Q = simplex(pI,pIV,pV)
+const Q = simplex(pI,qII,qIII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 30
+Accuracy2 = 15
 cv_ref = CommonVertex4D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-      return ((x-pI)'*(y-pV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
+      return ((x-pII)'*(y-qIII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 
@@ -43,7 +54,7 @@ n1 = []
 n2 = []
 n3 = []
 #Grauss tensor product
-for i in 2:1:25
+for i in 2:1:14
    Accuracy = i
    cv = CommonVertex4D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
@@ -94,14 +105,14 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(5,10^4),ylims=(1e-6,1))
+plot!(xlims=(5,10^4),ylims=(1e-9,1))
 plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Vertex 4D",legend=:bottomleft)
 
 
 
 using BenchmarkTools
 
-ref = -1.0761994366251377 + 1.0886007687110666im
+ref = 0.004958861812742832 - 0.007274636107126924im
 
 cv = CommonVertex4D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
 

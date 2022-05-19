@@ -4,9 +4,9 @@ using SauterSchwab3D
 using StaticArrays
 
 
-const pI   = point(1,0,0)
-const pII  = point(0,1,0)
-const pIII = point(0,0,0)
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
 const pIV  = point(0,0,1)
 
 const qIV  = point(0,0,-1)
@@ -16,12 +16,12 @@ const Q = simplex(pI,pII,qIV,pIII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 18
+Accuracy2 = 15
 cf_ref = CommonFace6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 
 function integrand(x,y)
-      return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
+      return ((x-pI)'*(y-pIII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 
@@ -46,7 +46,7 @@ res_gm =[]
 n1 = []
 n2 = []
 n3 = []
-for i in 2:1:15
+for i in 2:1:14
    Accuracy = i
    cf = CommonFace6D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
 
@@ -101,15 +101,16 @@ plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
-plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 6D",legend=:bottomleft)
+plot!(xlabel="Number of Quadrature points", ylabel="Rel. Error.", title="Common Face 6D",legend=:bottomleft)
 
-
+savefig("CommonFace6D.png")
 
 using BenchmarkTools
 
-ref = 0.0011204365593010864 - 0.000870131729342847im
+#ref = 0.0011204365593010864 - 0.000870131729342847im
+ref = 0.00048696771525673295 - 0.0003733315476871413im
 
-cf = CommonFace6D(sing,SauterSchwab3D._legendre(4,0.0,1.0))
+cf = CommonFace6D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
 
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 

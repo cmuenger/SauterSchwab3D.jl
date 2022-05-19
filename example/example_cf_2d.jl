@@ -2,9 +2,15 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI = point(3,4,2)
 const pII = point(3,7,4)
 const pIII = point(8,3,5)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
 
 const P = simplex(pI, pII, pIII)
 const Q = simplex(pI, pII, pIII)
@@ -12,12 +18,12 @@ const Q = simplex(pI, pII, pIII)
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
 
-Accuracy2 = 24
+Accuracy2 = 15
 cf_ref = CommonFace4D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 
 function integrand(x,y)
-      return ((x-pI)'*(y-pII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
+      return ((x-pII)'*(y-pIII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 function INTEGRAND(u,v)
@@ -94,16 +100,16 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1e1,1e4),ylims=(1e-6,1))
+plot!(xlims=(1e1,1e4),ylims=(1e-7,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Face 4D",legend=:bottomleft)
 
 
 
 using BenchmarkTools
 
-ref = 9.199951912100538 - 5.619050336211777im
+ref = -0.02963930972760228 + 0.008464766688263384im
 
-cf = CommonFace4D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
+cf = CommonFace4D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
   
 int_tp = sauterschwab_parameterized(INTEGRAND, cf)
 

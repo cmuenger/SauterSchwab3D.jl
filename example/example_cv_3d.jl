@@ -2,6 +2,7 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+#=
 const pI   = point(6,5,3)
 const pII  = point(5,2,3)
 const pIII = point(7,1,0)
@@ -10,17 +11,27 @@ const pIV  = point(3,4,0)
 const qII  = point(3,8,4)
 const qIII = point(7,5,6)
 const qIV  = point(9,8,5)
+=#
+
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
+const pIV  = point(0,0,1)
+
+const qII  = point(-1,0,0)
+const qIII = point(0,-1,0)
+const qIV  = point(0,0,-1)
 
 const P = simplex(pI,pII,pIII,pIV)
 const Q = simplex(pI,qII,qIII,qIV)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
-Accuracy2 = 16
+Accuracy2 = 15
 cv_ref = CommonVertex6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-   ((x-pI)'*(y-pIV))*return(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
+   return ((x-pI)'*(y-qIII))*(exp(-im*1*norm(x-y))/(4pi*norm(x-y)))
 end
 
 
@@ -65,7 +76,6 @@ for i in 2:1:7
    
    int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
 
-   println(length(cv_s.qps))
    num_pts = 2*length(cv_s.qps)^2
    push!(n2,num_pts)
    push!(res_sp,int_sp)
@@ -104,7 +114,7 @@ plot!(xlabel="#Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common V
 
 using BenchmarkTools
 
-ref = 0.003477333267758975 - 0.5997621570461863im
+ref =  -0.00011371770069956979 + 0.0001226562699727992im
 
 cv = CommonVertex6D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
 
@@ -116,7 +126,7 @@ err_tp = norm.(int_tp.-ref)/norm(ref)
 println(err_tp)
 @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, cv) end
 
-cv_s = CommonVertex6D_S(sing,SauterSchwab3D._shunnham3D(6))
+cv_s = CommonVertex6D_S(sing,SauterSchwab3D._shunnham3D(7))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, cv_s)
 

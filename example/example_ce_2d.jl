@@ -1,19 +1,26 @@
 using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
-
+#=
 const pI = point(1,0,0)
 const pII = point(0,0,0)
 const pIII = point(0.5,0.7,0)
 const pIV = point(0.8,-0.3,0)
+=#
+const pI   = point(0,0,0)
+const pII  = point(1,0,0)
+const pIII = point(0,1,0)
+ 
+const qIII = point(0,-1,0)
+
 
 const P = simplex(pI,pIII,pII)
-const Q = simplex(pI,pIV,pII)
+const Q = simplex(pI,qIII,pII)
 
 const sing = SauterSchwab3D.singularity_detection(P,Q)
 
 
-Accuracy2 = 30
+Accuracy2 = 15
 ce_ref = CommonEdge4D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
@@ -21,12 +28,6 @@ function integrand(x,y)
 end
 
 function INTEGRAND(u,v)
-   if u[2]< 0.0 || u[2]>1-u[1] || u[1]<0.0 || u[1]>1.0
-      println(u)
-   end
-   if v[2]< 0.0 || v[2]>1-v[1] || v[1]<0.0 || v[1]>1.0
-      println(v)
-   end
    n1 = neighborhood(P,u)
    n2 = neighborhood(Q,v)
    x = cartesian(n1)
@@ -46,7 +47,7 @@ res_gm = []
 n1 = []
 n2 = []
 n3 = []
-for i in 2:1:20
+for i in 2:1:14
    Accuracy = i
    ce = CommonEdge4D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))
   
@@ -95,15 +96,15 @@ plot( yaxis=:log,xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(3e1,1e5),ylims=(1e-7,1e-1))
+plot!(xlims=(3e1,1e5),ylims=(1e-8,1e-1))
 plot!(xlabel="Quad. points/Func. evals.", ylabel="Rel. Error.", title="Common Edge 4D",legend=:bottomleft)
 
 
 using BenchmarkTools
 
-ref = -0.0028991793711368725 + 0.0012868587156426375im
+ref = -0.007051309436221841 + 0.005782096241048667im
 
-ce = CommonEdge4D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
+ce = CommonEdge4D(sing,SauterSchwab3D._legendre(6,0.0,1.0))
   
 int_tp = sauterschwab_parameterized(INTEGRAND, ce)
 
@@ -114,8 +115,8 @@ println("Rel Err: ",err_tp)
 @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, ce) end
 
 
-ce_s = CommonEdge4D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
-SauterSchwab3D._shunnham2D(5)))
+ce_s = CommonEdge4D_S(sing,(SauterSchwab3D._legendre(6,0.0,1.0),
+SauterSchwab3D._shunnham2D(6)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, ce_s)
 

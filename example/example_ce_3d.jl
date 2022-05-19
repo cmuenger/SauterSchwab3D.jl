@@ -20,7 +20,7 @@ Accuracy2 = 15
 ce_ref = CommonEdge6D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
 
 function integrand(x,y)
-      return ((x-pI)'*(y-pIV))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
+      return ((x-pI)'*(y-qIII))*exp(-im*1*norm(x-y))/(4pi*norm(x-y))
 end
 
 function INTEGRAND(u,v)
@@ -105,14 +105,14 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(1e2,5e5),ylims=(1e-7,1))
+plot!(xlims=(1e2,5e7),ylims=(1e-11,1))
 plot!(xlabel="#Quad. pts/Func. evals", ylabel="Rel. Error.", title="Common Edge 6D",legend=:bottomleft)
 
 
 
 using BenchmarkTools
 
-ref = -0.0004334592744412087 + 0.0005754325764942029im
+ref =  0.00041274116231997213 - 0.0003417955682495072im
 
 ce = CommonEdge6D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
 
@@ -124,10 +124,10 @@ err_tp = norm.(int_tp.-ref)/norm(ref)
 println("Rel Err: ",err_tp)
 @time for i in 1:100 sauterschwab_parameterized(INTEGRAND, ce) end
 
-ce_s = CommonEdge6D_S(sing,(SauterSchwab3D._legendre(5,0.0,1.0),
-                     SauterSchwab3D._shunnham2D(5),
-                     SauterSchwab3D._shunnham3D(5),
-                     SauterSchwab3D._shunnham4D(5)))
+ce_s = CommonEdge6D_S(sing,(SauterSchwab3D._legendre(6,0.0,1.0),
+                     SauterSchwab3D._shunnham2D(6),
+                     SauterSchwab3D._shunnham3D(6),
+                     SauterSchwab3D._shunnham4D(6)))
 
 int_sp = sauterschwab_parameterized(INTEGRAND, ce_s)
 
