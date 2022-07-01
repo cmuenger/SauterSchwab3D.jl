@@ -7,3 +7,6 @@ type: software
 authors:
   - given-names: Cedric
     family-names: Münger
+    
+version: 0.1.1
+url: "https://github.com/cmuenger/SauterSchwab3D.jl"
