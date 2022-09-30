@@ -19,7 +19,7 @@ const Q_v = simplex(qII,pI,qIII)
 
 
 #=
-s = SauterSchwab3D.singularity_detection(P_v,Q_v)
+s = singularity_detection(P_v,Q_v)
 println(s)
 
 I,J = reorder(s,cv)
@@ -34,7 +34,7 @@ println(K,L)
 const P_e = simplex(pI,pII,pIII,pIV)
 const Q_e = simplex(qIII,pI,pII,qII)
 
-s = SauterSchwab3D.singularity_detection(P_e,Q_e)
+s = singularity_detection(P_e,Q_e)
 println(s)
 
 I,J = reorder(s)

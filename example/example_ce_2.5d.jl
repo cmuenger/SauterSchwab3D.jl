@@ -3,6 +3,8 @@ using CompScienceMeshes
 using SauterSchwab3D
 using StaticArrays
 
+include("singularity_detection.jl")
+
 #=
 const pI   = point(6,5,3)
 const pII  = point(5,2,3)
@@ -25,7 +27,7 @@ const qIII = point(0,0,-1)
 const P = simplex(pI,pII,pIV,pIII)
 const Q = simplex(pI,qIII,pII)
 
-const sing = SauterSchwab3D.singularity_detection(P,Q)
+const sing = singularity_detection(P,Q)
 
 Accuracy2 = 15
 ce_ref = CommonEdge5D(sing,SauterSchwab3D._legendre(Accuracy2,0.0,1.0))
@@ -49,12 +51,12 @@ ref = sauterschwab_parameterized(INTEGRAND, ce_ref)
 println(ref)
 println()
 
-res_tp =[]
-res_sp =[]
-res_gm =[]
-n1 = []
-n2 = []
-n3 = []
+res_tp =ComplexF64[]
+res_sp =ComplexF64[]
+res_gm =ComplexF64[]
+n1 = Int[]
+n2 = Int[]
+n3 = Int[]
 
 for i in 2:1:14
    Accuracy = i
@@ -116,7 +118,7 @@ savefig("CommonEdge5D.png")
 
 using BenchmarkTools
 
-ref = 0.000540733351653903 - 5.0563494982354675e-5im
+# ref = 0.000540733351653903 - 5.0563494982354675e-5im
 
 ce = CommonEdge5D(sing,SauterSchwab3D._legendre(5,0.0,1.0))
 

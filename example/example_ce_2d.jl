@@ -1,6 +1,9 @@
 using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
+
+include("singularity_detection.jl")
+
 #=
 const pI = point(1,0,0)
 const pII = point(0,0,0)
@@ -17,7 +20,7 @@ const qIII = point(0,-1,0)
 const P = simplex(pI,pIII,pII)
 const Q = simplex(pI,qIII,pII)
 
-const sing = SauterSchwab3D.singularity_detection(P,Q)
+const sing = singularity_detection(P,Q)
 
 
 Accuracy2 = 15
@@ -41,12 +44,12 @@ ref = sauterschwab_parameterized(INTEGRAND, ce_ref)
 println(ref)
 println()
 
-res_tp =[]
-res_sp =[]
-res_gm = []
-n1 = []
-n2 = []
-n3 = []
+res_tp =ComplexF64[]
+res_sp =ComplexF64[]
+res_gm =ComplexF64[]
+n1 = Int[]
+n2 = Int[]
+n3 = Int[]
 for i in 2:1:14
    Accuracy = i
    ce = CommonEdge4D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))

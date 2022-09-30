@@ -21,42 +21,7 @@ struct Singularity4DPoint  <: Singularity4D T::SVector{1,Int64}; S::SVector{1,In
 struct Singularity4DEdge   <: Singularity4D T::SVector{2,Int64}; S::SVector{2,Int64} end
 struct Singularity4DFace   <: Singularity4D T::SVector{3,Int64}; S::SVector{3,Int64} end
 
-function singularity_detection(t,s)
 
-    sing = 0;
-
-    D = dimension(t)+dimension(s)
-    idx_t = []
-    idx_s = []
-    for i in 1:length(t)
-        v = t[i]
-        for j in 1:length(s)
-            w = s[j]
-            if norm(w-v) < eps(eltype(v)) * 1.0e3
-                sing += 1
-                push!(idx_t,i)
-                push!(idx_s,j)
-                break
-            end
-        end
-    end
-
-    if D == 4
-        sing == 1 && return Singularity4DPoint(idx_t,idx_t)
-        sing == 2 && return Singularity4DEdge(idx_t,idx_t)
-        sing == 3 && return Singularity4DFace(idx_t,idx_t)
-    elseif D == 5
-        sing == 1 && return Singularity5DPoint(idx_t,idx_t)
-        sing == 2 && return Singularity5DEdge(idx_t,idx_t)
-        sing == 3 && return Singularity5DFace(idx_t,idx_t)
-    elseif D == 6
-        sing == 1 && return Singularity6DPoint(idx_t,idx_t)
-        sing == 2 && return Singularity6DEdge(idx_t,idx_t)
-        sing == 3 && return Singularity6DFace(idx_t,idx_t)
-        sing == 4 && return Singularity6DVolume(idx_t,idx_t)
-    end
- 
-end
 
 
 

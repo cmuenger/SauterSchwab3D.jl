@@ -1,0 +1,9 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+CompScienceMeshes = "3e66a162-7b8c-5da0-b8f8-124ecd2c3ae1"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+SauterSchwab3D = "0a13313b-1c00-422e-8263-562364ed9544"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+CompScienceMeshes = "0.4"
