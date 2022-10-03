@@ -2,6 +2,8 @@ using LinearAlgebra
 using CompScienceMeshes
 using SauterSchwab3D
 
+include("singularity_detection.jl")
+
 #=
 const pI   = point(6,5,3)
 const pII  = point(5,2,4)
@@ -17,7 +19,7 @@ const pIV  = point(0,0,1)
 const P = simplex(pI,pII,pIII,pIV)
 const Q =  simplex(pI,pII,pIII,pIV)
 
-const sing = SauterSchwab3D.singularity_detection(P,Q)
+const sing = singularity_detection(P,Q)
 
 
 Accuracy2 = 15
@@ -43,12 +45,12 @@ ref = sauterschwab_parameterized(INTEGRAND, ct_ref)
 println(ref)
 println()
 
-res_tp =[]
-res_sp =[]
-res_gm =[]
-n1 = []
-n2 = []
-n3 = []
+res_tp =ComplexF64[]
+res_sp =ComplexF64[]
+res_gm =ComplexF64[]
+n1 = Int[]
+n2 = Int[]
+n3 = Int[]
 for i in 2:1:14
    Accuracy = i
    ct = CommonVolume6D(sing,SauterSchwab3D._legendre(Accuracy,0.0,1.0))

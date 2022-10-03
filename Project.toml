@@ -3,7 +3,6 @@ uuid = "0a13313b-1c00-422e-8263-562364ed9544"
 version = "0.1.1"
 
 [deps]
-CompScienceMeshes = "3e66a162-7b8c-5da0-b8f8-124ecd2c3ae1"
 FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 GrundmannMoeller = "36aa67b7-9d79-4e90-bbc0-05abd90a007e"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -11,7 +10,6 @@ ShunnHamQuadrature = "164309f2-5039-4884-b6c7-6da8aa5c66ad"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
-CompScienceMeshes = "0.3.2"
 FastGaussQuadrature = "0.3, 0.4"
 GrundmannMoeller = "0.1.1"
 ShunnHamQuadrature = "0.1.0"
