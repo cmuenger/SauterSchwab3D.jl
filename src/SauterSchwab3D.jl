@@ -1,7 +1,7 @@
 module SauterSchwab3D
 
 using LinearAlgebra
-using CompScienceMeshes
+# using CompScienceMeshes
 using StaticArrays
 using FastGaussQuadrature
 using GrundmannMoeller
@@ -21,7 +21,7 @@ function sauterschwab_parameterized end
 
 include("pulled_back_integrals.jl")
 include("sauterschwabintegral.jl")
-include("parametric_kernel_generator.jl")
+# include("parametric_kernel_generator.jl")
 include("reorder_vertices.jl")
 
 end 
