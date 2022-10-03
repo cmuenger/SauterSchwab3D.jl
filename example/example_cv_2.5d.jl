@@ -109,7 +109,7 @@ plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 plot!(xlims=(1e1,1e5),ylims=(1e-8,1))
 p = plot!(xlabel="Number of Quadrature points", ylabel="Rel. Error.", title="Common Vertex 5D",legend=:bottomleft)
 
-savefig(p,"CommonVetrtex5D.png")
+savefig(p,"CommonVertex5D.png")
 
 using BenchmarkTools
 

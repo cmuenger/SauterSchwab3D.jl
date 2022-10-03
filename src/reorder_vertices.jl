@@ -5,18 +5,18 @@ abstract type Singularity6D <: Singularity end
 abstract type Singularity5D <: Singularity end
 abstract type Singularity4D <: Singularity end
 
+struct Singularity6DPositiveDistance  <: Singularity6D end
 struct Singularity6DPoint  <: Singularity6D T::SVector{1,Int64}; S::SVector{1,Int64} end
 struct Singularity6DEdge   <: Singularity6D T::SVector{2,Int64}; S::SVector{2,Int64} end
 struct Singularity6DFace   <: Singularity6D T::SVector{3,Int64}; S::SVector{3,Int64} end
 struct Singularity6DVolume <: Singularity6D T::SVector{4,Int64}; S::SVector{4,Int64} end
-
 
 struct Singularity5DPositiveDistance  <: Singularity5D end
 struct Singularity5DPoint  <: Singularity5D T::SVector{1,Int64}; S::SVector{1,Int64} end
 struct Singularity5DEdge   <: Singularity5D T::SVector{2,Int64}; S::SVector{2,Int64} end
 struct Singularity5DFace   <: Singularity5D T::SVector{3,Int64}; S::SVector{3,Int64} end
 
-
+struct Singularity4DPositiveDistance  <: Singularity4D end
 struct Singularity4DPoint  <: Singularity4D T::SVector{1,Int64}; S::SVector{1,Int64} end
 struct Singularity4DEdge   <: Singularity4D T::SVector{2,Int64}; S::SVector{2,Int64} end
 struct Singularity4DFace   <: Singularity4D T::SVector{3,Int64}; S::SVector{3,Int64} end
@@ -63,6 +63,16 @@ end
 """"
 Tetrahedron-Tetrahedron reordering
 """
+#Dummy for no singularity
+function reorder(sing::Singularity6DPositiveDistance)
+
+    I = SVector{4,Int64}([1,2,3,4])
+    J = SVector{4,Int64}([1,2,3,4])
+
+    return I, J
+end
+
+
 #Common Vertex 
 function reorder(sing::Singularity6DPoint)
 
@@ -155,7 +165,7 @@ end
 Tetrahedron-Triangle reordering
 """
 
-#Common Volume
+#Dummy for no singularity
 function reorder(sing::Singularity5DPositiveDistance)
 
     I = SVector{4,Int64}([1,2,3,4])
@@ -233,6 +243,15 @@ end
 """
 Triangle-Trangle reordering
 """
+#Dummy for no singularity
+function reorder(sing::Singularity4DPositiveDistance)
+
+    I = SVector{3,Int64}([1,2,3])
+    J = SVector{3,Int64}([1,2,3])
+
+    return I, J
+end
+
 
 #Commmon Vertex
 function reorder(sing::Singularity4DPoint)

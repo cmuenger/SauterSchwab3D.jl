@@ -109,7 +109,7 @@ plot( yaxis=:log, xaxis=:log, fontfamily="Times")
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
 plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
 #plot!(n3,err_gm, label="Simplex-Product GM",markershape=:x)
-plot!(xlims=(5e1,1e5),ylims=(1e-8,1))
+plot!(xlims=(1e1,1e5),ylims=(1e-8,1))
 plot!(xlabel="Number of Quadrature points", ylabel="Rel. Error.", title="Common Edge 5D",legend=:bottomleft)
 
 savefig("CommonEdge5D.png")

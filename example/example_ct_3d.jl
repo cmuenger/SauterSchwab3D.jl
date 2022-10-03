@@ -100,21 +100,17 @@ println(err_gm)
 
 
 using Plots
-plot( yaxis=:log, xaxis=:log, fontfamily="Times" )
+plot( yaxis=:log, xaxis=:log) #, fontfamily="Times" )
 plot!(n1,err_tp, label="Gauss Tensor-Product",markershape=:circle)
-plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect)
+plot!(n2,err_sp, label="Simplex Tensor-Product",markershape=:rect, color=:green)
 #plot!(n3,err_gm, label="GrundmannMoeller Tensor-Product",markershape=:x)
 plot!(xlims=(1e2,1e7),ylims=(1e-8,1))
 plot!(xlabel="Number of Quadrature points", ylabel="Rel. Error.", title="Identical Tetrahedron 6D",legend=:bottomleft)
 
-savefig("CommonVolume6D.png")
+savefig("CommonVolume6D.pdf")
 
 using BenchmarkTools
 
-#=
-ref = 1.749281958454714 -  4.409866361065269im
-      1.7492819584338808 - 4.409866360985539im
-=#
 #reference solution
 ref= -0.00020240321624519095 + 0.0001297749782688385im
 
