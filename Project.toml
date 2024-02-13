@@ -10,7 +10,7 @@ ShunnHamQuadrature = "164309f2-5039-4884-b6c7-6da8aa5c66ad"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
-FastGaussQuadrature = "0.3, 0.4, 0.5"
+FastGaussQuadrature = "0.3, 0.4, 0.5, 1"
 GrundmannMoeller = "0.1.1"
 ShunnHamQuadrature = "0.1.0"
 StaticArrays = "0.8.3, 0.9, 0.10, 0.11, 0.12, 1"
