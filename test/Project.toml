@@ -1,0 +1,10 @@
+[deps]
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+GrundmannMoeller = "36aa67b7-9d79-4e90-bbc0-05abd90a007e"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ShunnHamQuadrature = "164309f2-5039-4884-b6c7-6da8aa5c66ad"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+CompScienceMeshes = "3e66a162-7b8c-5da0-b8f8-124ecd2c3ae1"
+
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

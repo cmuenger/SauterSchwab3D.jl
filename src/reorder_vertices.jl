@@ -63,68 +63,161 @@ function reorder(sing::Singularity6DPoint)
 end
 
 
+# #Common Edge <--- does not work properly
+# function reorder(sing::Singularity6DEdge)
+
+#     # Find the permutation P of t and s that make
+#     # Pt = [P1, A1, A2, P2]
+#     # Ps = [P1, B1, B2, P2]
+  
+#     I = sort(sing.T)
+
+#     I2 = setdiff([1,2,3,4],I)
+
+#     for i in 1:I2[2]-I2[1]-1
+#         reverse!(I2)
+#     end
+#     I3 = hcat(I,I2)
+
+#     J = sort(sing.S)
+
+#     J2 = setdiff([1,2,3,4],J)
+
+#     for i in 1:J2[2]-J2[1]-1
+#         reverse!(J2)
+#     end
+#     J3 = hcat(J,J2)
+
+#     return SVector{4}(I3), SVector{4}(J3)
+# end
+
 #Common Edge
 function reorder(sing::Singularity6DEdge)
-
     # Find the permutation P of t and s that make
-    # Pt = [P1, A1, A2, P2]
-    # Ps = [P1, B1, B2, P2]
-  
-    I = sort(sing.T)
+    # Pt = [P1, P2, A1, A2]
+    # Ps = [P1, P2, B1, B2]
 
-    I2 = setdiff([1,2,3,4],I)
+    # test tetrahedron    
+    i_P1 = sing.T[1]
+    i_P2 = sing.T[2]
 
-    for i in 1:I2[2]-I2[1]-1
-        reverse!(I2)
-    end
-    I3 = hcat(I,I2)
+    I = [1,2,3,4]
+    I[4] == i_P1 && (I = circshift(I,2))
+    I3 = I[1:3]
+    r = indexin(i_P1, I3)[1]
+    I3 = circshift(I3,1-r)
+    I = vcat(I3,I[4])
 
-    J = sort(sing.S)
+    I3 = I[2:4]
+    r = indexin(i_P2, I3)[1]
+    I3 = circshift(I3,1-r)
+    I = vcat(I[1],I3)
 
-    J2 = setdiff([1,2,3,4],J)
+    # trial tetrahedron
+    i_P1 = sing.S[1]
+    i_P2 = sing.S[2]
 
-    for i in 1:J2[2]-J2[1]-1
-        reverse!(J2)
-    end
-    J3 = hcat(J,J2)
+    J = [1,2,3,4]
+    J[4] == i_P1 && (J = circshift(J,2))
+    J3 = J[1:3]
+    r = indexin(i_P1, J3)[1]
+    J3 = circshift(J3,1-r)
+    J = vcat(J3,J[4])
 
-    return SVector{4}(I3), SVector{4}(J3)
+    J3 = J[2:4]
+    r = indexin(i_P2, J3)[1]
+    J3 = circshift(J3,1-r)
+    J = vcat(J[1],J3)
+
+    return SVector{4}(I), SVector{4}(J)
 end
+
+
+# #Common Face <--- does not work properly
+# function reorder(sing::Singularity6DFace)
+#     # Find the permutation P of t and s that make
+#     # Pt = [P1, P2, A1, P3]
+#     # Ps = [P1, P2, A1, P3]
+
+#     i = setdiff([1,2,3,4],sing.T)[1]-1
+ 
+#     I = circshift([1,2,3,4],-i)
+#     for k in 1:i
+     
+#         reverse!(I,2,4)
+#     end 
+#     I = circshift(I,2)
+    
+#     j = setdiff([1,2,3,4],sing.S)[1]-1
+#     J = circshift([1,2,3,4],-j)
+#     for k in 1:j
+     
+#         reverse!(J,2,4)
+#     end 
+#     J = circshift(J,2)
+
+#     return SVector{4}(I), SVector{4}(J)
+# end
 
 #Common Face
 function reorder(sing::Singularity6DFace)
     # Find the permutation P of t and s that make
     # Pt = [P1, P2, A1, P3]
-    # Ps = [P1, P2, A1, P3]
+    # Ps = [P1, P2, B1, P3] <---- no CSM-tetrahedron, BEAST extension for the CommonFace6D case needed
 
-    i = setdiff([1,2,3,4],sing.T)[1]-1
- 
-    I = circshift([1,2,3,4],-i)
-    for k in 1:i
-     
-        reverse!(I,2,4)
-    end 
-    I = circshift(I,2)
-    
-    j = setdiff([1,2,3,4],sing.S)[1]-1
-    J = circshift([1,2,3,4],-j)
-    for k in 1:j
-     
-        reverse!(J,2,4)
-    end 
-    J = circshift(J,2)
+    # test tetrahedron
+    i_A1 = setdiff([1,2,3,4],sing.T)[1]
+    I = [1,2,3,4]
+    I[4] == i_A1 && (I = circshift(I,2))
+    I3 = I[1:3]
+    r = indexin(i_A1, I3)[1]
+    I3 = circshift(I3,3-r)
+    I = vcat(I3,I[4])
+
+
+    # trial tetrahedron
+    i_P1 = sing.S[indexin(I[1], sing.T)[1]]
+    i_P2 = sing.S[indexin(I[2], sing.T)[1]]
+    i_B1 = setdiff([1,2,3,4],sing.S)[1]
+    i_P3 = sing.S[indexin(I[4], sing.T)[1]]
+
+    J = [i_P1, i_P2, i_B1, i_P3]
 
     return SVector{4}(I), SVector{4}(J)
 end
 
+
+# #Common Volume <--- does not work properly
+# function reorder(sing::Singularity6DVolume)
+
+#     I = SVector{4,Int64}([1,2,3,4])
+#     J = SVector{4,Int64}([1,2,3,4])
+
+#     return I, J
+# end
+
 #Common Volume
 function reorder(sing::Singularity6DVolume)
+    # Find the permutation P of t and s that make
+    # Pt = [P1, P2, P3, P4]
+    # Ps = [P1, P2, P3, P4]
 
-    I = SVector{4,Int64}([1,2,3,4])
-    J = SVector{4,Int64}([1,2,3,4])
+    # test tetrahedron
+    I = [1,2,3,4]
 
-    return I, J
+    # trial tetrahedron
+    i_P1 = sing.S[indexin(I[1], sing.T)[1]]
+    i_P2 = sing.S[indexin(I[2], sing.T)[1]]
+    i_P3 = sing.S[indexin(I[3], sing.T)[1]]
+    i_P4 = sing.S[indexin(I[4], sing.T)[1]]
+
+    J = [i_P1, i_P2, i_P3, i_P4]
+
+    return SVector{4,Int64}(I), SVector{4,Int64}(J)
 end
+
+
+
 
 """
 Tetrahedron-Triangle reordering
@@ -158,35 +251,86 @@ function reorder(sing::Singularity5DPoint)
     return SVector{4}(I), SVector{3}(J)
 end
 
-#Common Edge
-function reorder(sing::Singularity5DEdge)
+# #Common Edge <--- does not work properly
+# function reorder(sing::Singularity5DEdge)
 
-    # Find the permutation P of t and s that make
-    # Pt = [P1, A1, A2, P2]
-    # Ps = [P1, B1, P2]
+#     # Find the permutation P of t and s that make
+#     # Pt = [P1, A1, A2, P2]
+#     # Ps = [P1, B1, P2]
  
-    #Tetrahedron
-    I = sort(sing.T)
+#     #Tetrahedron
+#     I = sort(sing.T)
 
-    I2 = setdiff([1,2,3,4],I)
+#     I2 = setdiff([1,2,3,4],I)
 
-    for i in 1:I2[2]-I2[1]-1
-        reverse!(I2)
-    end
-    I3 = hcat(I,I2)
+#     for i in 1:I2[2]-I2[1]-1
+#         reverse!(I2)
+#     end
+#     I3 = hcat(I,I2)
+
+#     #Triangle
+#     s = setdiff([1,2,3],sing.S)
+#     J = circshift([1,2,3],-s[1]+2)
+
+#     return SVector{4}(I3), SVector{3}(J)
+# end
+
+#Common Edge 
+function reorder(sing::Singularity5DEdge)
+    # Find the permutation P of t and s that make
+    # Pt = [P1, P2, A1, A2]
+    # Ps = [P1, B1, P2]
 
     #Triangle
-    s = setdiff([1,2,3],sing.S)
-    J = circshift([1,2,3],-s[1]+2)
+    s = setdiff([1,2,3],sing.S)[1]
+    J = circshift([1,2,3],-s+2)
 
-    return SVector{4}(I3), SVector{3}(J)
+    #Tetrahedron
+    i_P1 = sing.T[indexin(J[1], sing.S)[1]]
+    i_P2 = sing.T[indexin(J[3], sing.S)[1]]
+
+    I = [1,2,3,4]
+    I[4] == i_P1 && (I = circshift(I,2))
+    I3 = I[1:3]
+    r = indexin(i_P1, I3)[1]
+    I3 = circshift(I3,1-r)
+    I = vcat(I3,I[4])
+
+    I3 = I[2:4]
+    r = indexin(i_P2, I3)[1]
+    I3 = circshift(I3,1-r)
+    I = vcat(I[1],I3)
+
+    return SVector{4}(I), SVector{3}(J)
 end
+
+# #Common Face <--- does not work properly
+# function reorder(sing::Singularity5DFace)
+#     # Find the permutation P of t and s that make
+#     # Pt = [P1, P2, A1, P3]
+#     # Ps = [P1, P2, P3]
+
+#     #Tetrahedron
+#     i = setdiff([1,2,3,4],sing.T)[1]-1
+ 
+#     I = circshift([1,2,3,4],-i)
+#     for k in 1:i
+     
+#         reverse!(I,2,4)
+#     end 
+#     I = circshift(I,2)
+    
+#     #Triangle
+#     J = SVector{3,Int64}([1,2,3])
+
+#     return SVector{4}(I), J
+# end
 
 #Common Face
 function reorder(sing::Singularity5DFace)
     # Find the permutation P of t and s that make
     # Pt = [P1, P2, A1, P3]
-    # Ps = [P1, P2, P3]
+    # Ps = [P1, P3, P2]
 
     #Tetrahedron
     i = setdiff([1,2,3,4],sing.T)[1]-1
@@ -199,11 +343,18 @@ function reorder(sing::Singularity5DFace)
     I = circshift(I,2)
     
     #Triangle
-    J = SVector{3,Int64}([1,2,3])
+    i_P1 = sing.S[indexin(I[1], sing.T)[1]]
+    i_P2 = sing.S[indexin(I[2], sing.T)[1]]
+    i_P3 = sing.S[indexin(I[4], sing.T)[1]]
+    J = [i_P1, i_P3, i_P2]
 
-    return SVector{4}(I), J
+    return SVector{4}(I), SVector{3,Int64}(J)
 end
 
+
+
+
+# TODO: Test the Triangle-Triangle reordering!
 
 """
 Triangle-Trangle reordering

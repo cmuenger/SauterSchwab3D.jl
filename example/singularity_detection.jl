@@ -19,18 +19,18 @@ function singularity_detection(t,s)
     end
 
     if D == 4
-        sing == 1 && return SauterSchwab3D.Singularity4DPoint(idx_t,idx_t)
-        sing == 2 && return SauterSchwab3D.Singularity4DEdge(idx_t,idx_t)
-        sing == 3 && return SauterSchwab3D.Singularity4DFace(idx_t,idx_t)
+        sing == 1 && return SauterSchwab3D.Singularity4DPoint(idx_t,idx_s)
+        sing == 2 && return SauterSchwab3D.Singularity4DEdge(idx_t,idx_s)
+        sing == 3 && return SauterSchwab3D.Singularity4DFace(idx_t,idx_s)
     elseif D == 5
-        sing == 1 && return SauterSchwab3D.Singularity5DPoint(idx_t,idx_t)
-        sing == 2 && return SauterSchwab3D.Singularity5DEdge(idx_t,idx_t)
-        sing == 3 && return SauterSchwab3D.Singularity5DFace(idx_t,idx_t)
+        sing == 1 && return SauterSchwab3D.Singularity5DPoint(idx_t,idx_s)
+        sing == 2 && return SauterSchwab3D.Singularity5DEdge(idx_t,idx_s)
+        sing == 3 && return SauterSchwab3D.Singularity5DFace(idx_t,idx_s)
     elseif D == 6
-        sing == 1 && return SauterSchwab3D.Singularity6DPoint(idx_t,idx_t)
-        sing == 2 && return SauterSchwab3D.Singularity6DEdge(idx_t,idx_t)
-        sing == 3 && return SauterSchwab3D.Singularity6DFace(idx_t,idx_t)
-        sing == 4 && return SauterSchwab3D.Singularity6DVolume(idx_t,idx_t)
+        sing == 1 && return SauterSchwab3D.Singularity6DPoint(idx_t,idx_s)
+        sing == 2 && return SauterSchwab3D.Singularity6DEdge(idx_t,idx_s)
+        sing == 3 && return SauterSchwab3D.Singularity6DFace(idx_t,idx_s)
+        sing == 4 && return SauterSchwab3D.Singularity6DVolume(idx_t,idx_s)
     end
  
 end
