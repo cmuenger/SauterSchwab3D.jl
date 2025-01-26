@@ -9,7 +9,7 @@ using Test
 
 
 include("test_cv_3d.jl")
-include("test_ce_3d.jl") # Simplex Product not fixed! (CommonEdge6D_S - Domain 5)
+include("test_ce_3d.jl")
 include("test_cf_3d.jl")
 include("test_ct_3d.jl")
 

@@ -191,7 +191,7 @@ function sauterschwab_parameterized(integrand, method::CommonEdge6D)
 		for (η1, w1) in qps, (η2, w2) in qps, (η3, w3) in qps, (η4, w4) in qps, (ξ1, w5) in qps, (ξ2, w6) in qps)
 end
 
-#Common Simplex Tensor-Product
+#Common Edge Simplex-Product
 function sauterschwab_parameterized(integrand, method::CommonEdge6D_S)
 	qps = method.qps
 	sum(w1*w2*w3*k6p_ce_A(integrand, x[1], x[2], y[1], y[2], z[1], z[2])
@@ -202,8 +202,11 @@ function sauterschwab_parameterized(integrand, method::CommonEdge6D_S)
 		for (x, w1) in qps[2], (y, w2) in qps[4] ) +
     sum(w1*w2*w3*k6p_ce_D(integrand, x[1], x[2], y, z[1], z[2], z[3])
 		for (x, w1) in qps[2], (y, w2) in qps[1], (z, w3) in qps[3]) +
-    sum(w1*w2*w3*w4*k6p_ce_E(integrand, x[1], x[2], y, z[1], z[2], w)
-		for (x, w1) in qps[2], (y, w2) in qps[1], (z, w3) in qps[2], (w, w4) in qps[1])
+    sum(w1*w2*w3*w4*k6p_ce_E(integrand, x[1], x[2], y[1], y[2], z[1], w[1])
+		for (x, w1) in qps[2], (y, w2) in qps[2], (z, w3) in qps[1], (w, w4) in qps[1])
+    ####### Old implementation of Domain 5 ######################
+    # + sum(w1*w2*w3*w4*k6p_ce_E(integrand, x[1], x[2], y, z[1], z[2], w)
+	#	for (x, w1) in qps[2], (y, w2) in qps[1], (z, w3) in qps[2], (w, w4) in qps[1])
 end
 
 #Common Vertex Tensor-Product

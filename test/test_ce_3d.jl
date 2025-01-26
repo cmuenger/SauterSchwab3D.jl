@@ -96,66 +96,48 @@ ref = sauterschwab_parameterized(INTEGRAND, ce_ref)
 
 
 
-## remove this part if the problem with CommonEdge6D_S in domain 5 is fixed ############
-ce_s_ref = CommonEdge6D_S(sing_,(SauterSchwab3D._legendre(6,0.0,1.0),
-SauterSchwab3D._shunnham2D(6),
-SauterSchwab3D._shunnham3D(6),
-SauterSchwab3D._shunnham4D(6)))
+## Simplex Product vs. Tensor Product reference for all permutations
+list_tvert = collect(permutations([pI,pII,pIII,pIV]))
+list_svert = collect(permutations([pI,pII,qIII,qIV]))
 
-num3 = sauterschwab_parameterized(INTEGRAND1, ce_s_ref)
-exact3 = Q_.volume*P_.volume
-err3 = abs(num3-exact3)/abs(exact3) #<---------------- ≈5% error
-@show exact3
-@show num3
-@show err3
-@warn "CommonEdge6D ready, CommonEdge6D_S NOT ready - problem in domain 5"
-######################################################################################
-
-
-
-
-# ## Simplex Product vs. Tensor Product reference for all permutations
-# list_tvert = collect(permutations([pI,pII,pIII,pIV]))
-# list_svert = collect(permutations([pI,pII,qIII,qIV]))
-
-# for tvert in list_tvert
-#    for svert in list_svert
-#       P = simplex(tvert[1],tvert[2],tvert[3],tvert[4])
-#       Q = simplex(svert[1],svert[2],svert[3],svert[4])
+for tvert in list_tvert
+   for svert in list_svert
+      P = simplex(tvert[1],tvert[2],tvert[3],tvert[4])
+      Q = simplex(svert[1],svert[2],svert[3],svert[4])
       
-#       sing = singularity_detection(P,Q)
-#       I,J = reorder(sing)
+      sing = singularity_detection(P,Q)
+      I,J = reorder(sing)
 
-#       P_new = simplex(P.vertices[I])
-#       Q_new = simplex(Q.vertices[J])
+      P_new = simplex(P.vertices[I])
+      Q_new = simplex(Q.vertices[J])
 
-#       # expected reorder result:
-#       # Pt = [P1, P2, A1, A2]
-#       # Ps = [P1, P2, B1, B2]
-#       @test norm(P_new[1] - Q_new[1]) < 1.0e-14
-#       @test norm(P_new[2] - Q_new[2]) < 1.0e-14           
+      # expected reorder result:
+      # Pt = [P1, P2, A1, A2]
+      # Ps = [P1, P2, B1, B2]
+      @test norm(P_new[1] - Q_new[1]) < 1.0e-14
+      @test norm(P_new[2] - Q_new[2]) < 1.0e-14           
 
-#       if is_CSM_tet(P) == true && is_CSM_tet(Q) == true
-#          @test is_CSM_tet(P_new) == true
-#          @test is_CSM_tet(Q_new) == true
+      if is_CSM_tet(P) == true && is_CSM_tet(Q) == true
+         @test is_CSM_tet(P_new) == true
+         @test is_CSM_tet(Q_new) == true
 
-#          function INTEGRAND(u,v)
-#             j1 = volume(P_new) * factorial(dimension(P_new))
-#             j2 = volume(Q_new) * factorial(dimension(Q_new))
-#             x = barytocart(P_new,u)
-#             y = barytocart(Q_new,v)
-#             output = integrand(x,y)*j1*j2
+         function INTEGRAND(u,v)
+            j1 = volume(P_new) * factorial(dimension(P_new))
+            j2 = volume(Q_new) * factorial(dimension(Q_new))
+            x = barytocart(P_new,u)
+            y = barytocart(Q_new,v)
+            output = integrand(x,y)*j1*j2
             
-#             return output
-#          end
-#          ce_s = CommonEdge6D_S(sing,(SauterSchwab3D._legendre(6,0.0,1.0),
-#                           SauterSchwab3D._shunnham2D(6),
-#                           SauterSchwab3D._shunnham3D(6),
-#                           SauterSchwab3D._shunnham4D(6)))
-#          int_sp = sauterschwab_parameterized(INTEGRAND, ce_s)
-#          err_sp = norm(int_sp-ref)/norm(ref)
-#          @test err_sp < 5.0e-6
-#       end
-#    end
-# end
-# print("CommonEdge6D_S test finished")
+            return output
+         end
+         ce_s = CommonEdge6D_S(sing,(SauterSchwab3D._legendre(6,0.0,1.0),
+                          SauterSchwab3D._shunnham2D(6),
+                          SauterSchwab3D._shunnham3D(6),
+                          SauterSchwab3D._shunnham4D(6)))
+         int_sp = sauterschwab_parameterized(INTEGRAND, ce_s)
+         err_sp = norm(int_sp-ref)/norm(ref)
+         @test err_sp < 5.0e-6
+      end
+   end
+end
+print("CommonEdge6D_S test finished")
