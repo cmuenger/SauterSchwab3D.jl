@@ -48,3 +48,8 @@ For example, the file 'example_cv_2.5D.jl' contains an example how to use the qu
 - [2] L. Shunn and F. Ham, ``Symmetric quadrature rules for tetrahedra based on a cubic close-packed lattice arrangement,`` in Journal of Computational and Applied Mathematics, vol. 236, Issue 17, pp. 4348-4364,2012.
 
 - [3] C. Münger and K. Cools, ``Efficient and kernel-independent Evaluation of Singular Integrals in Volume Integral Equations,`` 2021 IEEE International Conference on Microwaves, Antennas, Communications and Electronic Systems (COMCAS), 2021, pp. 188-192.
+
+
+## Acknowledgement 
+
+Special thanks goes to Bjarne Mergl for writing the tests and fixing bugs.

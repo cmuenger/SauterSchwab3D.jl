@@ -1,6 +1,6 @@
 name = "SauterSchwab3D"
 uuid = "0a13313b-1c00-422e-8263-562364ed9544"
-version = "0.1.4"
+version = "0.2.0"
 
 [deps]
 FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
